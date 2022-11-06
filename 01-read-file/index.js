@@ -2,7 +2,7 @@ const {stdout} = require('process');
 const path = require('path');
 const fs = require('fs');
 
-let abs_path = path.join(__dirname, 'text.txt');   // абсолютный путь файла
-let handler =  function(data) { stdout.write(data) };  // обработчик события 'data'
-const input = fs.createReadStream( abs_path, 'utf-8' );
-input.on('data', handler);
+let pathToFile = path.join(__dirname, 'text.txt');
+let handler = function(data) { stdout.write(data) };
+const inputStream = fs.createReadStream( pathToFile );
+inputStream.on('data', handler);

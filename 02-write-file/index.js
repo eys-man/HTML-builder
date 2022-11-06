@@ -1,8 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 const {stdout, stdin, exit} = require('process');
-const { toASCII } = require('punycode');
 const output = fs.createWriteStream( path.join(__dirname, 'test.txt') );
+
 stdout.write('Hi. Enter some text:\n');
 
 function goodBuy() {
@@ -19,4 +19,3 @@ handler = function(data) {
 
 stdin.on('data', handler);
 process.on('SIGINT', goodBuy);
-

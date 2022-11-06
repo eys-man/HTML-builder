@@ -2,18 +2,17 @@ const fs = require('fs');
 const path = require('path');
 const fsPromises = fs.promises;
 
-const dir_path = path.join(__dirname, 'secret-folder');
-fsPromises.readdir( dir_path, {withFileTypes: true} ).then( res => { 
+const dirPath = path.join(__dirname, 'secret-folder');
+fsPromises.readdir( dirPath, {withFileTypes: true} ).then( res => { 
 
-    for( let i=0; i < res.length; i++)
-    {
-        // получить информацию о файле в stats по полному пути
-        let file_path = path.join(dir_path, res[i].name);
-        fsPromises.stat( file_path ).then( file => {
+    for( let i=0; i < res.length; i++)     {
+
+        let filePath = path.join(dirPath, res[i].name);
+        fsPromises.stat( filePath ).then( file => {
 
             if( file.isFile() )
-                console.log( path.basename(file_path).replace( path.extname(file_path), "")
-                + " - " + path.extname(file_path).replace(".", "")
+                console.log( path.basename(filePath).replace( path.extname(filePath), "")
+                + " - " + path.extname(filePath).replace(".", "")
                 + " - " + file.size + " Bytes");
 
         } );
