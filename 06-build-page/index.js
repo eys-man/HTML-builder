@@ -57,7 +57,6 @@ async function copyFolder(folderSrc, folderDest) {
     const srcFiles = await fs.readdir( folderSrc, { withFileTypes: true } );
     const destFiles = await fs.readdir( folderDest, { withFileTypes: true } );
 
-    // рекурсивно удалить все файлы и каталоги
     for( let i = 0; i < destFiles.length; i++) {
 
         try {
@@ -67,7 +66,6 @@ async function copyFolder(folderSrc, folderDest) {
         }
     }
 
-    // рекурсивное копирование
     for( let i = 0; i < srcFiles.length; i++) {
 
         if( srcFiles[i].isDirectory() ) {
