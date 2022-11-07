@@ -1,44 +1,39 @@
-const {stat, readdir, unlink, mkdir } = require("fs/promises");
-const fs = require("fs");
+const fs = require("fs/promises");
 const path = require("path");
-const fsPromises = fs.promises;
 
 const destFolderPath = path.join(__dirname, "files-copy");
 const sourceFolderPath = path.join(__dirname, "files");
 
-function copyFolder() {
+async function copyDirectory(folderSrc, folderDest) {
 
-    fs.stat( destFolderPath, err => { 
-        if( !err) {  
-            
-            fs.readdir( destFolderPath, {withFileTypes: true}, (error, files) => {
-                if( !error ) {
-                    for( let i=0; i < files.length; i++) {
+    await fs.mkdir(folderDest, { recursive: true });
 
-                        let filePath = path.join(destFolderPath, files[i].name);
-                        fsPromises.unlink( filePath );
-                    }
-                }
-            })
-        };
-        fs.mkdir( destFolderPath, { recursive: true }, () => {
+    const srcFiles = await fs.readdir( folderSrc, { withFileTypes: true } );
+    const destFiles = await fs.readdir( folderDest, { withFileTypes: true } );
 
-            fs.readdir( sourceFolderPath, {withFileTypes: true}, (error, files) => {
-                if( !error ) {
-                    for( let i=0; i < files.length; i++) {
+    for( let i = 0; i < destFiles.length; i++) {
 
-                        let filePath = path.join(sourceFolderPath, files[i].name);
-                       
-                        fsPromises.copyFile(filePath, path.join( destFolderPath, files[i].name ) );
-                    }
-                }
+        try {
+            await fs.rm( path.join(folderDest, destFiles[i].name), { recursive: true } );
+        } catch( err ) {
+            console.log(err);
+        }
+    }
 
-            })
+    for( let i = 0; i < srcFiles.length; i++) {
 
-        } )
-        
-    } );
+        if( srcFiles[i].isDirectory() ) {
+            await copyDirectory( path.join(folderSrc, srcFiles[i].name),
+                                 path.join(folderDest, srcFiles[i].name) );
+        } else if( srcFiles[i].isFile() ) {
+            try {
+                await fs.copyFile( path.join(folderSrc, srcFiles[i].name),
+                                   path.join(folderDest, srcFiles[i].name) );
+            } catch( err ) {
+                console.log(err);
+            }
+        }
+    }
+};
 
-}
-
-copyFolder();
+copyDirectory(sourceFolderPath, destFolderPath);

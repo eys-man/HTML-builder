@@ -10,7 +10,7 @@ function goodBuy() {
     exit();
 }
 
-handler = function(data) {
+function handler(data) {
     if( data.toString().trim() === 'exit' ) 
         goodBuy();
         
